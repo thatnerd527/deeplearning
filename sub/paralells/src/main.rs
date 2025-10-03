@@ -14,12 +14,10 @@ use walkdir::WalkDir;
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
 struct Args {
-    /// Name of the person to greet
     #[arg(short, long)]
     inputfolder: PathBuf,
-    /// Number of times to greet
     #[arg(short, long)]
-    outputfolder: PathBuf,
+    outputfile: PathBuf,
 }
 
 #[derive(Clone, Debug)]
@@ -138,13 +136,11 @@ fn image_process(x: Batch) -> Batch {
         .resolved_inputs
         .clone()
         .into_par_iter()
+        .filter_map(|x2| ImageReader::open(x2).ok())
+        .filter_map(|x3| x3.with_guessed_format().ok())
+        .filter_map(|x4| x4.decode().ok()) 
         .map(|x2| {
-            let image = ImageReader::open(x2)
-                .unwrap()
-                .with_guessed_format()
-                .unwrap()
-                .decode()
-                .unwrap();
+            let image =  x2;
             let result = encode_image_to_bytes(image, ImageFormat::Png).unwrap();
             let hashed_name = hex::encode(md5::compute(&result).0.to_vec());
             let path = Path::new("steps/convertedtemp").join(hashed_name + ".png");
@@ -163,9 +159,6 @@ fn main() {
     let args = Args::parse();
     if !args.inputfolder.exists() || args.inputfolder.is_file() {
         panic!("inputfolder has to be a folder, and has to exist")
-    }
-    if !args.outputfolder.exists() || args.outputfolder.is_file() {
-        panic!("outputfolder has to be a folder, and has to exist")
     }
     let listed = fs::read_dir(args.inputfolder).unwrap();
     let preprocess = listed
@@ -191,5 +184,15 @@ fn main() {
         .map(|x| process_batch(x))
         .map(|x| image_process(x))
         .collect::<Vec<_>>();
-    //let mut wtr = csv::Writer::from_writer(io::stdout());
+    let mut wtr = csv::Writer::from_writer(File::create(args.outputfile).unwrap());
+    for item in processed {
+        item.converted.iter().for_each(|x| {
+            wtr.serialize(CsvRecord {
+                class_name: item.class_name.clone(),
+                file_path: x.canonicalize().unwrap().to_str().unwrap().to_owned(),
+                id: x.file_name().unwrap().to_str().unwrap().to_owned()
+            }).unwrap();
+        });
+    }
+    wtr.flush().unwrap();
 }
