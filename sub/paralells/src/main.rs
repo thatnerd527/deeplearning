@@ -31,14 +31,22 @@ struct CsvRecord {
     id: String,
     class_name: String,
     file_path: String,
+    resolution: Option<String>,
 }
+
+#[derive(Debug, Serialize, Clone)]
+struct Resolution {
+    width: u32,
+    height: u32,
+}
+
 
 #[derive(Clone, Debug)]
 struct Batch {
     class_name: String,
     inputs: Vec<InputFile>,
     resolved_inputs: Vec<PathBuf>,
-    converted: Vec<PathBuf>,
+    converted: Vec<(PathBuf, Resolution)>,
 }
 
 use once_cell::sync::Lazy;
@@ -141,7 +149,7 @@ fn image_process(x: Batch) -> Batch {
         .filter_map(|x4| x4.decode().ok()) 
         .map(|x2| {
             let image =  x2;
-            let result = encode_image_to_bytes(image, ImageFormat::Png).unwrap();
+            let result = encode_image_to_bytes(image.clone(), ImageFormat::Png).unwrap();
             let hashed_name = hex::encode(md5::compute(&result).0.to_vec());
             let path = Path::new("steps/convertedtemp").join(hashed_name + ".png");
             if !path.exists() {
@@ -149,7 +157,7 @@ fn image_process(x: Batch) -> Batch {
             }
             let mut resultfile = File::create(&path).unwrap();
             resultfile.write_all(&result).unwrap();
-            Path::new(&path).to_path_buf()
+            (Path::new(&path).to_path_buf(), Resolution { width: image.width(), height: image.height()})
         })
         .collect::<Vec<_>>();
     dup
@@ -189,8 +197,9 @@ fn main() {
         item.converted.iter().for_each(|x| {
             wtr.serialize(CsvRecord {
                 class_name: item.class_name.clone(),
-                file_path: x.canonicalize().unwrap().to_str().unwrap().to_owned(),
-                id: x.file_name().unwrap().to_str().unwrap().to_owned()
+                file_path: x.0.canonicalize().unwrap().to_str().unwrap().to_owned(),
+                id: x.0.file_name().unwrap().to_str().unwrap().to_owned(),
+                resolution: Some(format!("{}x{}", x.1.width, x.1.height)),
             }).unwrap();
         });
     }
