@@ -35,6 +35,6 @@ Download NVIDIA Container Toolkit from here: [NVIDIA Container Toolkit Link](htt
 ## Podman step instructions
 
 1. Import the NvidiaAccel.tar image
-2. Create the container using podman run -it --name NvidiaAccel --security-opt=label=disable -v (your path):(your path --device nvidia.com/gpu=all docker.io/library/nvidiadl bash
+2. Create the container using podman run -it --name NvidiaAccel --security-opt=label=disable -v (your path):(your path) --device nvidia.com/gpu=all docker.io/library/nvidiadl bash
 
 Log into container: podman start NvidiaAccel ; podman exec -it NvidiaAccel bash
