@@ -3,12 +3,13 @@ use csv::StringRecord;
 use http::Request;
 use image::{DynamicImage, ImageFormat, ImageReader, ImageResult};
 use rayon::prelude::*;
-use reqwest::blocking;
+use reqwest::blocking::{self, Client};
 use serde::Serialize;
 use std::{
     fs::{self, DirEntry, File, FileType},
     io::{Cursor, Read, Write},
     path::{self, Path, PathBuf},
+    time::Duration,
 };
 use walkdir::WalkDir;
 #[derive(Parser, Debug)]
@@ -39,7 +40,6 @@ struct Resolution {
     width: u32,
     height: u32,
 }
-
 
 #[derive(Clone, Debug)]
 struct Batch {
@@ -104,7 +104,12 @@ fn process_batch(x: Batch) -> Batch {
             // error here.
             {
                 let record = x.unwrap().get(0).unwrap().to_owned();
-                let response = blocking::get(record).unwrap().bytes().unwrap();
+                let client = Client::builder()
+                    .timeout(None)
+                    .build()
+                    .unwrap();
+                let response = client.get(record)
+                .send().unwrap().bytes().unwrap();
                 let path = Path::new("steps/downloadtemp").join(baseid.clone() + "_");
                 if !path.exists() {
                     fs::create_dir_all(path.clone().parent().unwrap()).unwrap();
@@ -146,9 +151,9 @@ fn image_process(x: Batch) -> Batch {
         .into_par_iter()
         .filter_map(|x2| ImageReader::open(x2).ok())
         .filter_map(|x3| x3.with_guessed_format().ok())
-        .filter_map(|x4| x4.decode().ok()) 
+        .filter_map(|x4| x4.decode().ok())
         .map(|x2| {
-            let image =  x2;
+            let image = x2;
             let result = encode_image_to_bytes(image.clone(), ImageFormat::Png).unwrap();
             let hashed_name = hex::encode(md5::compute(&result).0.to_vec());
             let path = Path::new("steps/convertedtemp").join(hashed_name + ".png");
@@ -157,7 +162,13 @@ fn image_process(x: Batch) -> Batch {
             }
             let mut resultfile = File::create(&path).unwrap();
             resultfile.write_all(&result).unwrap();
-            (Path::new(&path).to_path_buf(), Resolution { width: image.width(), height: image.height()})
+            (
+                Path::new(&path).to_path_buf(),
+                Resolution {
+                    width: image.width(),
+                    height: image.height(),
+                },
+            )
         })
         .collect::<Vec<_>>();
     dup
@@ -200,7 +211,8 @@ fn main() {
                 file_path: x.0.canonicalize().unwrap().to_str().unwrap().to_owned(),
                 id: x.0.file_name().unwrap().to_str().unwrap().to_owned(),
                 resolution: Some(format!("{}x{}", x.1.width, x.1.height)),
-            }).unwrap();
+            })
+            .unwrap();
         });
     }
     wtr.flush().unwrap();
