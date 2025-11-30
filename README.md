@@ -24,10 +24,6 @@ Welcome to the Deep Learning Lab Repository!, This repository contains all the d
 
 Feature Extraction and Modelling notebooks are still in progress and will be updated soon.
 
-THIS REPO IS NOT THE FULL VERSION WITH ALL THE FILES:
-
-This is a trimmed down version of the repository, some large files and datasets have been removed to reduce the size of the repository. If you need the full version, download it from here: [Full Repo Download Link](https://example.com/full-repo-download)
-
 This repo is designed to with a podman container with NVIDIA Container Toolkit 1.17.8, download the container image from here: [Container Image Link](https://example.com/container-image)
 
 Download NVIDIA Container Toolkit from here: [NVIDIA Container Toolkit Link](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/1.17.8/install-guide.html)
