@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "sub/paralells"
+		},
+		{
+			"path": "sub/foodApp"
 		}
 	],
 	"settings": {}
