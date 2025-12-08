@@ -75,6 +75,19 @@ async def upload_form(
         "description": description
     }
 
+@app.post("/oneshot_image_confidences")
+async def upload_form_with_confidences(
+    file: Annotated[UploadFile, File(description="A file read as UploadFile")],
+    description: Annotated[str, Form()] = "No description provided"
+):
+    features = extract_image_features(file)
+    predicted_class, confidences = classify_image_with_confidences(features)
+    return {
+        "predicted_class": predicted_class,
+        "confidences": confidences,
+        "description": description
+    }
+
 @app.websocket("/ws/socketprocessing")
 async def video_endpoint(websocket: WebSocket):
     await websocket.accept()
@@ -112,4 +125,4 @@ async def video_endpoint(websocket: WebSocket):
 
 if __name__ == "__main__":
     # Run this file directly to start the server
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=2000)
