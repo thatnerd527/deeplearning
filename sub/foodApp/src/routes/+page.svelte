@@ -474,7 +474,7 @@
 				</div>
 			</div>
 
-			<div class="font-[sourcesanspro] text-white text-2xl mt-4">
+			<div class="font-[sourcesanspro] text-white text-2xl mt-4 mb-4">
 				<div>Frames sent: {connectionManager.liveMode.liveModeStats.framesSent}</div>
 				<div>Frames received: {connectionManager.liveMode.liveModeStats.framesReceived}</div>
 				<div>Last Frame Latency: {connectionManager.liveMode.liveModeStats.lastFrameLatencyMS}</div>
