@@ -1,3 +1,4 @@
+import time
 from fastapi import FastAPI, File, UploadFile, Form, WebSocket, WebSocketDisconnect
 from typing import Annotated
 import tensorflow as tf
@@ -95,7 +96,7 @@ async def video_endpoint(websocket: WebSocket):
         while True:
             # 1. Receive the binary frame data
             data = await websocket.receive_bytes()
-            
+            start_time = time.perf_counter()
             # 2. Convert bytes to numpy array (decoding the image)
             # This is efficient; it doesn't write to disk
             nparr = np.frombuffer(data, np.uint8)
@@ -111,11 +112,15 @@ async def video_endpoint(websocket: WebSocket):
             
             # Example: Print frame dimensions to prove it's working
             height, width, _ = frame.shape
-            print(f"Received frame: {width}x{height}")
-            
+            imageId = f"frame_{np.random.randint(1000,9999)}"
+            end_time = time.perf_counter()
+            latency_ms = (end_time - start_time) * 1000
             await websocket.send_json({
+                "type": "detection",
                 "predicted_class": predicted_class,
-                "confidences": confidences
+                "confidences": confidences,
+                "imageId": imageId,
+                "latencyMS": latency_ms
             })
 
     except WebSocketDisconnect:

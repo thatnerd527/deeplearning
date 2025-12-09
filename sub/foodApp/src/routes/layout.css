@@ -2,4 +2,15 @@
 @import '@fontsource/fira-mono';
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
+
+/* source-sans-pro-latin-400-normal */
+@font-face {
+  font-family: 'sourcesanspro';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url(@fontsource/source-sans-pro/files/source-sans-pro-latin-400-normal.woff2) format('woff2'), url(@fontsource/source-sans-pro/files/source-sans-pro-latin-400-normal.woff) format('woff');
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+
 :root,:host{--md-sys-color-background:#131318;--md-sys-color-on-background:#e4e1e8;--md-sys-color-surface:#131318;--md-sys-color-surface-dim:#131318;--md-sys-color-surface-bright:#39393e;--md-sys-color-surface-container-lowest:#0d0e12;--md-sys-color-surface-container-low:#1b1b20;--md-sys-color-surface-container:#1f1f24;--md-sys-color-surface-container-high:#29292f;--md-sys-color-surface-container-highest:#343439;--md-sys-color-on-surface:#e4e1e8;--md-sys-color-surface-variant:#454650;--md-sys-color-on-surface-variant:#c6c5d2;--md-sys-color-inverse-surface:#e4e1e8;--md-sys-color-inverse-on-surface:#303035;--md-sys-color-outline:#90909c;--md-sys-color-outline-variant:#454650;--md-sys-color-shadow:#000000;--md-sys-color-scrim:#000000;--md-sys-color-surface-tint:#bcc2ff;--md-sys-color-primary:#bcc2ff;--md-sys-color-on-primary:#1f296f;--md-sys-color-primary-container:#1b256c;--md-sys-color-on-primary-container:#acb5ff;--md-sys-color-inverse-primary:#4f58a0;--md-sys-color-secondary:#c2c4e7;--md-sys-color-on-secondary:#2b2e4a;--md-sys-color-secondary-container:#3a3e5a;--md-sys-color-on-secondary-container:#d0d2f6;--md-sys-color-tertiary:#f5aff3;--md-sys-color-on-tertiary:#4f1953;--md-sys-color-tertiary-container:#4c1751;--md-sys-color-on-tertiary-container:#e9a4e8;--md-sys-color-error:#ffb4ab;--md-sys-color-on-error:#690005;--md-sys-color-error-container:#93000a;--md-sys-color-on-error-container:#ffdad6;}

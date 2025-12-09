@@ -146,14 +146,13 @@ body {
 .live-mode-3980a22a954b {
   position: relative;
   width: 100%;
-  height: auto;
+  height: fit-content;
   background: #272a37FF;
   border: 1px solid #3f4458FF;
   border-start-start-radius: 8px;
   border-start-end-radius: 8px;
   border-end-start-radius: 8px;
   border-end-end-radius: 8px;
-  overflow: hidden;
   display: flex;
   align-items: start;
   align-content: stretch;
@@ -165,22 +164,19 @@ body {
   padding-block-end: 12px;
   flex-direction: column;
   flex-wrap: nowrap;
-  min-height: 224px;
-  min-block-size: 224px;
 }
 
 /* Board */
 .board-3980a22a954c {
   position: relative;
   width: 100%;
-  height: 64px;
+  height: fit-content;
   background: #2f3345FF;
   border: 1px solid #3f4458FF;
   border-start-start-radius: 8px;
   border-start-end-radius: 8px;
   border-end-start-radius: 8px;
   border-end-end-radius: 8px;
-  overflow: hidden;
   display: flex;
   align-items: start;
   align-content: stretch;
@@ -240,7 +236,7 @@ body {
 .board-3980a22a954d {
   position: relative;
   width: 100%;
-  height: 64px;
+  height: 80px;
   background: #2f3345FF;
   border: 1px solid #3f4458FF;
   border-start-start-radius: 8px;
@@ -470,10 +466,8 @@ body {
   border-start-end-radius: 8px;
   border-end-start-radius: 8px;
   border-end-end-radius: 8px;
-  overflow: hidden;
   display: flex;
   align-items: center;
-  align-content: stretch;
   justify-content: start;
   padding-inline-start: 12px;
   padding-inline-end: 12px;
@@ -484,7 +478,7 @@ body {
 /* SwitchBoard */
 .switch-boar-3980a22a9556 {
   position: relative;
-  width: 231px;
+  width: 100%;
   height: 100%;
   overflow: hidden;
   display: flex;
@@ -543,14 +537,13 @@ body {
 .live-mode-3980aa50a8b2 {
   position: relative;
   width: 100%;
-  height: auto;
+  height: fit-content;
   background: #272a37FF;
   border: 1px solid #3f4458FF;
   border-start-start-radius: 8px;
   border-start-end-radius: 8px;
   border-end-start-radius: 8px;
   border-end-end-radius: 8px;
-  overflow: hidden;
   display: flex;
   align-items: start;
   align-content: stretch;
@@ -562,22 +555,19 @@ body {
   padding-block-end: 12px;
   flex-direction: column;
   flex-wrap: nowrap;
-  min-height: 168.02px;
-  min-block-size: 168.02px;
 }
 
 /* Board */
 .board-3980aa50a8b5 {
   position: relative;
   width: 100%;
-  height: auto;
+  height: fit-content;
   background: #2f3345FF;
   border: 1px solid #3f4458FF;
   border-start-start-radius: 8px;
   border-start-end-radius: 8px;
   border-end-start-radius: 8px;
   border-end-end-radius: 8px;
-  overflow: hidden;
   display: flex;
   align-items: start;
   align-content: stretch;
@@ -588,8 +578,6 @@ body {
   padding-block-start: 12px;
   flex-direction: column;
   flex-wrap: nowrap;
-  min-height: 48.01px;
-  min-block-size: 48.01px;
 }
 
 /* SwitchBoard */

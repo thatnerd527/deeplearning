@@ -1,17 +1,24 @@
 <script lang="ts">
 	import { applyHooksToConnectionManager, createConnectionManager, createConnectionManagerTemplate, type ConnectionManager } from "$lib/connectionManager.svelte";
 	import { onMount } from "svelte";
+	import Chart from 'chart.js/auto';
 	import "./mainpage.css";
+	import { applyChartHooks } from "$lib/chartManager.svelte";
 	let connectionManager: ConnectionManager = $state(createConnectionManagerTemplate());
-	let videoElement: HTMLVideoElement | null = null;
-    let canvasElement: HTMLCanvasElement | null = null;
+	let cameraVideoElement: HTMLVideoElement | null = null;
+    let hiddenCanvasElement: HTMLCanvasElement | null = null;
+	let chartCanvasElement: HTMLCanvasElement | null = null;
+	let chart: Chart | null;
+	import '@material/web/switch/switch.js';
+	import '@material/web/textfield/outlined-text-field.js';
+	
 	onMount(() => {
-
 		connectionManager = createConnectionManager();
-		if (videoElement && canvasElement && connectionManager) {
-			applyHooksToConnectionManager(connectionManager, videoElement, canvasElement);
+		if (cameraVideoElement && hiddenCanvasElement && connectionManager) {
+			applyHooksToConnectionManager(connectionManager, cameraVideoElement, hiddenCanvasElement);
 		}
 	});
+	applyChartHooks(() => chartCanvasElement, (x) => chart = x, () => connectionManager, () => chart);
 </script>
 
 <svelte:head></svelte:head>
@@ -20,9 +27,11 @@
 <div class="frame main-page-397b128b1c7d">
 	<!-- frame: ImageViewer -->
 	<div class="shape frame image-viewe-397d93a11401">
-		<video bind:this={videoElement} width="480" height="480" autoplay muted playsinline></video>
+		<video bind:this={cameraVideoElement} width="480" height="480" autoplay muted playsinline
+		></video>
 
-		<canvas bind:this={canvasElement} width="480" height="480" style="display: none;"></canvas>
+		<canvas bind:this={hiddenCanvasElement} width="480" height="480" style="display: none;"
+		></canvas>
 	</div>
 	<!-- frame: Socket Indicator -->
 	<div class="frame socket-ind-3986abf1728a">
@@ -358,7 +367,7 @@
 						<div class="paragraph-set root-0-paragraph-set-0">
 							<p class="paragraph root-0-paragraph-set-0-paragraph-0" dir="ltr">
 								<span class="text-node root-0-paragraph-set-0-paragraph-0-text-0"
-									>Highest detection: ____________</span
+									>Highest detection: {connectionManager.detectionStats.currentDetection}</span
 								>
 							</p>
 						</div>
@@ -370,25 +379,7 @@
 		</div>
 		<!-- frame: Board -->
 		<div class="frame board-3980aa50a8b5">
-			<!-- text: Graph -->
-			<div class="shape text graph-3981214a5e7e">
-				<div
-					class="text-node-html"
-					id="html-text-node-6ec272e4-2a39-8029-8007-3981214a5e7e"
-					data-x="1358"
-					data-y="662.01"
-				>
-					<div class="root rich-text root-0" xmlns="http://www.w3.org/1999/xhtml">
-						<div class="paragraph-set root-0-paragraph-set-0">
-							<p class="paragraph root-0-paragraph-set-0-paragraph-0" dir="ltr">
-								<span class="text-node root-0-paragraph-set-0-paragraph-0-text-0">Graph</span>
-							</p>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- frame: SwitchBoard -->
-			<div class="shape frame switch-boar-3980aa50a8bd"></div>
+			<canvas class="shape canvas w-full" bind:this={chartCanvasElement}></canvas>
 		</div>
 	</div>
 	<!-- frame: LiveMode -->
@@ -412,8 +403,14 @@
 					</div>
 				</div>
 			</div>
-			<!-- frame: SwitchBoard -->
-			<div class="shape frame switch-boar-3980a22a9556"></div>
+			<div class="w-full"></div>
+			<md-switch
+				selected={connectionManager.liveMode.liveMode}
+				onchange={(e) => {
+					connectionManager.liveMode.liveMode = e.target.selected;
+				}}
+				class="md-primary"
+			></md-switch>
 		</div>
 		<!-- frame: Board -->
 		<div class="frame board-3980a22a954d">
@@ -438,81 +435,21 @@
 			</div>
 			<!-- frame: TextBoard -->
 			<div class="frame text-board-3980a22a9551">
-				<!-- frame: Remove this -->
-				<div class="frame remove-thi-3981a5c595c7">
-					<!-- text: TextBox -->
-					<div class="shape text text-box-3985839257db">
-						<div
-							class="text-node-html"
-							id="html-text-node-6ec272e4-2a39-8029-8007-3985839257db"
-							data-x="1492"
-							data-y="814.0199999999998"
-						>
-							<div class="root rich-text root-0" xmlns="http://www.w3.org/1999/xhtml">
-								<div class="paragraph-set root-0-paragraph-set-0">
-									<p class="paragraph root-0-paragraph-set-0-paragraph-0" dir="ltr">
-										<span class="text-node root-0-paragraph-set-0-paragraph-0-text-0"
-											>Live mode FPS</span
-										>
-									</p>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- frame: Apply Button -->
-			<div class="frame apply-butt-3980a22a9550">
-				<!-- group: check_24dp_E3E3E3_FILL1_wght400_GRAD0_opsz24 -->
-				<div class="shape group check24dp-39817a96df02">
-					<svg
-						width="32"
-						xmlns="http://www.w3.org/2000/svg"
-						height="32"
-						id="screenshot-6ec272e4-2a39-8029-8007-39817a96df02"
-						viewBox="1634 810.02 32 32"
-						style="-webkit-print-color-adjust::exact"
-						xmlns:xlink="http://www.w3.org/1999/xlink"
-						fill="none"
-						version="1.1"
-					>
-						<g
-							id="shape-6ec272e4-2a39-8029-8007-39817a96df02"
-							style="opacity:1;fill:#000000"
-							height="24"
-							width="24"
-							rx="0"
-							ry="0"
-						>
-							<defs></defs>
-							<g id="shape-6ec272e4-2a39-8029-8007-39817a976781" style="display:none">
-								<defs></defs>
-								<g class="fills" id="fills-6ec272e4-2a39-8029-8007-39817a976781">
-									<rect
-										rx="0"
-										ry="0"
-										x="1634"
-										y="810.0199999999998"
-										transform="matrix(1.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000)"
-										width="32"
-										height="32"
-										fill="none"
-										style="fill:none"
-									></rect>
-								</g>
-							</g>
-							<g id="shape-6ec272e4-2a39-8029-8007-39817a97b75b">
-								<defs></defs>
-								<g class="fills" id="fills-6ec272e4-2a39-8029-8007-39817a97b75b">
-									<path
-										d="M1646.7332763671875,834.02001953125L1639.13330078125,826.4199829101562L1641.0333251953125,824.52001953125L1646.7332763671875,830.219970703125L1658.9666748046875,817.9866943359375L1660.86669921875,819.8866577148438L1646.7332763671875,834.02001953125Z"
-										style="fill:#ffffff;fill-opacity:1"
-									></path>
-								</g>
-							</g>
-						</g>
-					</svg>
-				</div>
+				<md-outlined-text-field
+					value={connectionManager.liveMode.liveModeFPS}
+					label="FPS"
+					type="text"
+					class="md-w-32 bg-transparent outline-0 border-transparent"
+					onchange={(e) => {
+						console.log(e);
+						const value = parseInt(e.target.value);
+						if (!isNaN(value) && value > 0) {
+							connectionManager.liveMode.liveModeFPS = value;
+						} else {
+							e.target.value = connectionManager.liveMode.liveModeFPS;
+						}
+					}}
+				></md-outlined-text-field>
 			</div>
 		</div>
 		<!-- frame: Board -->
@@ -536,12 +473,24 @@
 					</div>
 				</div>
 			</div>
+
+			<div class="font-[sourcesanspro] text-white text-2xl mt-4">
+				<div>Frames sent: {connectionManager.liveMode.liveModeStats.framesSent}</div>
+				<div>Frames received: {connectionManager.liveMode.liveModeStats.framesReceived}</div>
+				<div>Last Frame Latency: {connectionManager.liveMode.liveModeStats.lastFrameLatencyMS}</div>
+			</div>
 		</div>
 	</div>
 	<!-- frame: CaptureBox -->
 	<div class="frame capture-box-397e1c64035c">
 		<!-- frame: CaptureButton -->
-		<div class="frame capture-but-397ef05f11fd">
+		<button
+			class="frame capture-but-397ef05f11fd"
+			onclick={() => {
+				connectionManager.captureManagement.captureNow = true;
+			}}
+		>
+			<md-ripple></md-ripple>
 			<!-- text: Capture -->
 			<div class="shape text capture-397ef05f11ff">
 				<div
@@ -559,7 +508,7 @@
 					</div>
 				</div>
 			</div>
-		</div>
+		</button>
 	</div>
 </div>
 

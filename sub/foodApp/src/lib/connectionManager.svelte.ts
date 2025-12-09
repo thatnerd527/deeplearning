@@ -8,6 +8,7 @@ export function urlMaker(targetport: number, targetpath: string = "/"): string {
 export type ConnectionManager = {
     detectionStats: {
         confidences: { [label: string]: number };
+        currentDetection: string;
         currentImageID?: string;
     }
     socket: {
@@ -36,14 +37,15 @@ export type ConnectionManager = {
 export function createConnectionManager(): ConnectionManager {
     return {
         detectionStats: {
-            confidences: {}
+            confidences: {},
+            currentDetection: ""
         },
         socket: {
             socketState: "disconnected",
             socketURL: `ws://${urlMaker(2000, "/ws/socketprocessing")}`
         },
         liveMode: {
-            liveMode: true,
+            liveMode: false,
             liveModeFPS: 10,
             liveModeStats: {
                 framesSent: 0,
@@ -58,6 +60,7 @@ export function createConnectionManager(): ConnectionManager {
 export function createConnectionManagerTemplate(): ConnectionManager {
     return {
         detectionStats: {
+            currentDetection: "",
             confidences: {}
         },
         socket: {
@@ -65,7 +68,7 @@ export function createConnectionManagerTemplate(): ConnectionManager {
             socketURL: ``
         },
         liveMode: {
-            liveMode: true,
+            liveMode: false,
             liveModeFPS: 10,
             liveModeStats: {
                 framesSent: 0,
@@ -106,6 +109,7 @@ function liveModeAndSocketHooks(cm: ConnectionManager, canvasElement: HTMLCanvas
                 canvasElement.toBlob((blob) => {
                     if (blob && cm.socket.socketConnection?.readyState === WebSocket.OPEN) {
                         cm.socket.socketConnection.send(blob);
+                        cm.liveMode.liveModeStats.framesSent += 1;
                     }
                 }, 'image/png', 1); // 1 is quality (compression)
 
@@ -154,6 +158,7 @@ function liveModeAndSocketHooks(cm: ConnectionManager, canvasElement: HTMLCanvas
                 const data = JSON.parse(event.data);
                 if (data.type === 'detection') {
                     cm.detectionStats.confidences = data.confidences;
+                    cm.detectionStats.currentDetection = data.predicted_class;
                     cm.detectionStats.currentImageID = data.imageId;
                     if (cm.captureManagement.captureNow) {
                         cm.captureManagement.currentImageId = data.imageId;
