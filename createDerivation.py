@@ -1,6 +1,6 @@
 import hashlib
 import os
-#make a function that is able to create variations of the dataset, so the function will accept the dataset, then a filtering function, then a map function, the filtering function will filter the dataset based on a condition, the parameter that it accepts is the file_path column, and returns a boolean. The map function will accept the file_path column and return a byte array representing the file. Now this function itself should return a path to a csv that can be read. The function will store variations of the csv file and images by hashing them. The columns of the csv files should be the same, but the rows may be different to the original dataset
+
 def create_dataset_variation(
     df,
     filter_fn,
