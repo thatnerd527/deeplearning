@@ -6,6 +6,7 @@ from tensorflow.keras.applications.resnet50 import preprocess_input
 # This is a dynamic model architecture that makes it possible to have dynamic layers and unit sizes tuned.
 # This architecture is a slight departure from normal deep learning architectures where the amount of layers and the amount of units are fixed in and unchanging during training.
 # But doing it like this allows us to control every single facet of the model dynamically using a program, and also increases flexibillity.
+@tf.keras.utils.register_keras_serializable()
 class DynamicResNetClassifier(tf.keras.Model):
     def __init__(self, num_classes, layer_configs, dropout_rate):
         super(DynamicResNetClassifier, self).__init__()
