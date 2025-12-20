@@ -7,3 +7,7 @@ yolov10x.pt
 processed_images
 variations
 datarealm
+all_in_one_model.keras
+avocado_only.keras
+banana_only.keras
+reconstructed_resnet.keras
